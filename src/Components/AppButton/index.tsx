@@ -23,7 +23,7 @@ export const AppButton: FC<PropsWithChildren<AppButtonParams>> = ({
     <TouchableOpacity
       {...rest}
       className={clsx(
-        "w-full mt-5 rounded-xl px-5 flex-row items-center h-button",
+        "w-full rounded-xl px-5 flex-row items-center h-button",
         iconName ? "justify-between" : "justify-center",
         {
           "bg-accent-brand": isFill,
