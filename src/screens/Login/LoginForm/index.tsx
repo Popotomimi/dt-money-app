@@ -32,7 +32,7 @@ export const LoginForm = () => {
         control={control}
         name="email"
         label="EMAIL"
-        placeholder="mail@exemple.com.br"
+        placeholder="mail@example.com.br"
         leftIconName="mail-outline"
       />
 

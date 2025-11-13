@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./schema";
 
-interface FormRegisterParams {
+export interface FormRegisterParams {
   email: string;
   name: string;
   password: string;
@@ -47,7 +47,7 @@ export const RegisterForm = () => {
         name="email"
         leftIconName="mail-outline"
         label="EMAIL"
-        placeholder="mail@exemple.br"
+        placeholder="mail@example.br"
       />
 
       <AppInput
