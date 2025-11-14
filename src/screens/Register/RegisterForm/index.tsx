@@ -2,9 +2,12 @@ import { useForm } from "react-hook-form";
 import { AppInput } from "../../../Components/AppInput";
 import { Text, View } from "react-native";
 import { AppButton } from "../../../Components/AppButton";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./schema";
+import { PublicStackParamsList } from "../../../routes/PublicRoutes";
+import { useAuthContext } from "../../../context/auth.context";
+import { AxiosError } from "axios";
 
 export interface FormRegisterParams {
   email: string;
@@ -28,9 +31,18 @@ export const RegisterForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const navigation = useNavigation();
+  const { handleRegister } = useAuthContext();
+  const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
-  const onSubmit = async () => {};
+  const onSubmit = async (userData: FormRegisterParams) => {
+    try {
+      await handleRegister(userData);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+      }
+    }
+  };
 
   return (
     <>
@@ -80,7 +92,7 @@ export const RegisterForm = () => {
           <AppButton
             iconName="arrow-forward"
             mode="outline"
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.navigate("Login")}>
             Acessar
           </AppButton>
         </View>

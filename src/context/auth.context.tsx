@@ -7,13 +7,18 @@ import {
 } from "react";
 import { FormLoginParams } from "../screens/Login/LoginForm";
 import { FormRegisterParams } from "../screens/Register/RegisterForm";
+import * as authService from "../shared/services/dt-money/auth.service";
+import { IUser } from "../shared/interfaces/user-interface";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { IAuthenticateResponse } from "../shared/interfaces/https/authenticate-response";
 
 type AuthContextType = {
-  user: null;
+  user: IUser | null;
   token: string | null;
   handleAuthenticate: (params: FormLoginParams) => Promise<void>;
   handleRegister: (params: FormRegisterParams) => Promise<void>;
   handleLogout: () => void;
+  restoreUserSession: () => Promise<string | null>;
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -21,14 +26,41 @@ export const AuthContext = createContext<AuthContextType>(
 );
 
 export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState<IUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
-  const handleAuthenticate = async ({ email, password }: FormLoginParams) => {};
+  const handleAuthenticate = async (userData: FormLoginParams) => {
+    const { token, user } = await authService.authenticate(userData);
+    await AsyncStorage.setItem(
+      "dt-money-user",
+      JSON.stringify({ user, token })
+    );
+    setToken(token);
+    setUser(user);
+  };
 
-  const handleRegister = async (FormData: FormRegisterParams) => {};
+  const handleRegister = async (FormData: FormRegisterParams) => {
+    const { token, user } = await authService.registerUser(FormData);
+    await AsyncStorage.setItem(
+      "dt-money-user",
+      JSON.stringify({ user, token })
+    );
+    setToken(token);
+    setUser(user);
+  };
 
   const handleLogout = () => {};
+
+  const restoreUserSession = async () => {
+    const userData = await AsyncStorage.getItem("dt-money-user");
+    if (userData) {
+      const { token, user } = JSON.parse(userData) as IAuthenticateResponse;
+      setUser(user);
+      setToken(token);
+    }
+
+    return userData;
+  };
 
   return (
     <AuthContext.Provider
@@ -38,6 +70,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
         handleAuthenticate,
         handleRegister,
         handleLogout,
+        restoreUserSession,
       }}>
       {children}
     </AuthContext.Provider>
