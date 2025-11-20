@@ -21,14 +21,14 @@ export const Home = () => {
 
   useEffect(() => {
     (async () => {
-      handleFetchCategories();
-      fetchTransactions();
+      await Promise.all([handleFetchCategories(), fetchTransactions()]);
     })();
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-background-secondary">
+    <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
+        className="bg-background-secondary"
         ListHeaderComponent={ListHeader}
         data={[]}
         renderItem={() => <></>}
