@@ -1,6 +1,7 @@
 import { dtMoneyApi } from "../../api/dt.money";
 import { TransactionCategory } from "../../interfaces/https/transaction-category-response";
 import { CreateTransactionInterface } from "../../interfaces/https/create-transaction-request";
+import { UpdateTransactionInterface } from "../../interfaces/https/update-transaction-request";
 import {
   GetTransactionResponse,
   GetTransactionsParams,
@@ -35,4 +36,14 @@ export const getTransactions = async (
   );
 
   return data;
+};
+
+export const deleteTransaction = async (id: number) => {
+  await dtMoneyApi.delete(`/transaction/${id}`);
+};
+
+export const updateTransaction = async (
+  transaction: UpdateTransactionInterface
+) => {
+  await dtMoneyApi.put("/transaction", transaction);
 };
