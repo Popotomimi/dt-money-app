@@ -1,6 +1,13 @@
 import { TotalTransactions } from "./total-transactions";
 import { Transaction } from "./transaction";
 
+export interface Pagination {
+  page: number;
+  perPage: number;
+  totalRows?: number;
+  totalPages: number;
+}
+
 export interface GetTransactionsParams {
   page: number;
   perPage: number;
