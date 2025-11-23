@@ -41,6 +41,9 @@ export type TransactionContextType = {
   loadings: Loadings;
   loadMoreTransactions: () => Promise<void>;
   handleLoadings: (params: HandleLoadingParams) => void;
+  pagination: Pagination;
+  setSearchText: (text: string) => void;
+  searchText: string;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -50,6 +53,8 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
 }) => {
   const [categories, setCatefories] = useState<TransactionCategory[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [searchText, setSearchText] = useState("");
+
   const [loadings, setLoadings] = useState<Loadings>({
     initial: false,
     refresh: false,
@@ -65,7 +70,7 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
 
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
-    perPage: 4,
+    perPage: 15,
     totalRows: 0,
     totalPages: 0,
   });
@@ -112,6 +117,7 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
       const transactionResponse = await transactionService.getTransactions({
         page,
         perPage: pagination.perPage,
+        searchText,
       });
 
       if (page === 1) {
@@ -131,7 +137,7 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
         totalPages: transactionResponse.totalPages,
       });
     },
-    [pagination]
+    [pagination, searchText]
   );
 
   const loadMoreTransactions = useCallback(async () => {
@@ -154,6 +160,9 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
         loadMoreTransactions,
         loadings,
         handleLoadings,
+        pagination,
+        setSearchText,
+        searchText,
       }}>
       {children}
     </TransactionContext.Provider>
