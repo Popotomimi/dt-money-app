@@ -14,7 +14,7 @@ export interface GetTransactionsParams {
   from?: Date;
   to?: Date;
   typeId?: number;
-  categoryId?: number;
+  categoryIds?: number[];
   searchText?: string;
 }
 
@@ -25,4 +25,11 @@ export interface GetTransactionResponse {
   page: number;
   perPage: number;
   totalTransactions: TotalTransactions;
+}
+
+export interface Filters {
+  from?: Date;
+  to?: Date;
+  typeId?: number;
+  categoryIds: Record<number, boolean>;
 }
